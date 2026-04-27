@@ -16,10 +16,7 @@ const parseCount = (raw: string | undefined) => {
 
 function getModel() {
   const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) {
-    throw new Error('Missing GEMINI_API_KEY')
-  }
-
+  if (!apiKey) throw new Error('Missing GEMINI_API_KEY')
   const genAI = new GoogleGenerativeAI(apiKey)
   return genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 }
@@ -28,186 +25,189 @@ function makeSseEvent(event: string, payload: unknown) {
   return encoder.encode(`event: ${event}\ndata: ${JSON.stringify(payload)}\n\n`)
 }
 
-async function fetchInstagramProfileInfo(username: string) {
-  const response = await fetch(`https://www.instagram.com/api/v1/users/web_profile_info/?username=${username}`, {
-    headers: {
-      'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-      Accept: '*/*',
-      'Accept-Language': 'en-US,en;q=0.9',
-      'X-IG-App-ID': '936619743392459',
-      Referer: `https://www.instagram.com/${username}/`,
-    },
-    cache: 'no-store',
-  })
-
-  if (!response.ok) {
-    throw new Error(`Profile info request failed with ${response.status}`)
-  }
-
-  const payload = await response.json()
-  const user = payload?.data?.user ?? payload?.user
-
-  if (!user) {
-    throw new Error('Profile info payload missing user data')
-  }
-
-  const followers =
-    user?.edge_followed_by?.count ??
-    user?.follower_count ??
-    user?.followers ??
-    0
-  const following =
-    user?.edge_follow?.count ??
-    user?.following_count ??
-    user?.following ??
-    0
-  const posts =
-    user?.edge_owner_to_timeline_media?.count ??
-    user?.media_count ??
-    user?.posts_count ??
-    0
-
-  return {
-    username,
-    displayName: user?.full_name || user?.username || username,
-    followers,
-    following,
-    posts,
-    image: user?.profile_pic_url_hd || user?.profile_pic_url || '',
-    bio: user?.biography || '',
-    dataAvailable: followers > 0 || posts > 0,
-  }
-}
-
-function extractFromHtml(html: string, field: 'followers' | 'following' | 'posts'): number {
-  const ogDesc = html.match(/<meta[^>]+property="og:description"[^>]+content="([^"]*)">/i)?.[1] ?? ''
-  const altOgDesc = html.match(/<meta[^>]+content="([^"]*)"[^>]+property="og:description">/i)?.[1] ?? ''
-  const desc = ogDesc || altOgDesc
-
-  if (field === 'followers') {
-    const match =
-      desc.match(/([\d,.]+[KMkm]?)\s*Followers?/i) ??
-      html.match(/"follower_count"\s*:\s*(\d+)/) ??
-      html.match(/"edge_followed_by"\s*:\s*\{\s*"count"\s*:\s*(\d+)/) ??
-      html.match(/"followersCount"\s*:\s*(\d+)/)
-    return parseCount(match?.[1])
-  }
-
-  if (field === 'following') {
-    const match =
-      desc.match(/([\d,.]+[KMkm]?)\s*Following/i) ??
-      html.match(/"following_count"\s*:\s*(\d+)/) ??
-      html.match(/"edge_follow"\s*:\s*\{\s*"count"\s*:\s*(\d+)/) ??
-      html.match(/"followingCount"\s*:\s*(\d+)/)
-    return parseCount(match?.[1])
-  }
-
-  const match =
-    desc.match(/([\d,.]+[KMkm]?)\s*Posts?/i) ??
-    html.match(/"media_count"\s*:\s*(\d+)/) ??
-    html.match(/"edge_owner_to_timeline_media"\s*:\s*\{\s*"count"\s*:\s*(\d+)/) ??
-    html.match(/"postsCount"\s*:\s*(\d+)/)
-  return parseCount(match?.[1])
-}
-
-async function scrapeInstagram(username: string) {
-  const attempts: Record<string, string>[] = [
-    {
-      'User-Agent':
-        'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
-      Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-      'Accept-Language': 'en-US,en;q=0.9',
-    },
-    {
-      'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-      Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-      'Accept-Language': 'en-US,en;q=0.5',
-      'Sec-Fetch-Dest': 'document',
-      'Sec-Fetch-Mode': 'navigate',
-      'Sec-Fetch-Site': 'none',
-    },
-    {
-      'User-Agent': 'Googlebot/2.1 (+http://www.google.com/bot.html)',
-      Accept: 'text/html',
-    },
+// Strategy 1: Instagram internal API with mobile app headers
+async function tryMobileApi(username: string) {
+  const endpoints = [
+    `https://i.instagram.com/api/v1/users/web_profile_info/?username=${username}`,
+    `https://www.instagram.com/api/v1/users/web_profile_info/?username=${username}`,
   ]
 
-  let html = ''
+  const mobileHeaders = {
+    'User-Agent': 'Instagram 269.0.0.18.75 Android (26/8.0.0; 480dpi; 1080x1920; OnePlus; ONEPLUS A3010; OnePlus3T; qcom; en_US; 314665256)',
+    'Accept': '*/*',
+    'Accept-Language': 'en-US',
+    'X-IG-Capabilities': '3brTvx0=',
+    'X-IG-Connection-Type': 'WIFI',
+    'X-IG-App-ID': '567067343352427',
+  }
 
-  for (const headers of attempts) {
+  for (const endpoint of endpoints) {
     try {
-      const response = await fetch(`https://www.instagram.com/${username}/`, {
-        headers: { ...headers, 'Cache-Control': 'no-cache' },
+      const res = await fetch(endpoint, { headers: mobileHeaders, cache: 'no-store' })
+      if (!res.ok) continue
+      const payload = await res.json()
+      const user = payload?.data?.user ?? payload?.user
+      if (!user) continue
+
+      const followers = user?.edge_followed_by?.count ?? user?.follower_count ?? 0
+      const following = user?.edge_follow?.count ?? user?.following_count ?? 0
+      const posts = user?.edge_owner_to_timeline_media?.count ?? user?.media_count ?? 0
+
+      if (followers > 0 || posts > 0) {
+        return {
+          username,
+          displayName: user?.full_name || username,
+          followers,
+          following,
+          posts,
+          image: user?.profile_pic_url_hd || user?.profile_pic_url || '',
+          bio: user?.biography || '',
+          dataAvailable: true,
+        }
+      }
+    } catch { /* try next */ }
+  }
+  return null
+}
+
+// Strategy 2: Scrape via allorigins proxy (bypasses Vercel IP blocks)
+async function tryProxyScrape(username: string) {
+  const targetUrl = encodeURIComponent(`https://www.instagram.com/${username}/`)
+  const res = await fetch(`https://api.allorigins.win/get?url=${targetUrl}`, {
+    cache: 'no-store',
+    signal: AbortSignal.timeout(8000),
+  })
+  if (!res.ok) return null
+  const data = await res.json() as { contents?: string }
+  return data.contents || null
+}
+
+// Strategy 3: Direct scrape with multiple user-agents
+async function tryDirectScrape(username: string): Promise<string | null> {
+  const userAgents = [
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'Googlebot/2.1 (+http://www.google.com/bot.html)',
+  ]
+
+  for (const ua of userAgents) {
+    try {
+      const res = await fetch(`https://www.instagram.com/${username}/`, {
+        headers: { 'User-Agent': ua, 'Accept': 'text/html', 'Cache-Control': 'no-cache' },
         cache: 'no-store',
       })
+      if (!res.ok) continue
+      const html = await res.text()
+      if (html.length > 5000) return html
+    } catch { /* try next */ }
+  }
+  return null
+}
 
-      if (!response.ok) continue
-
-      html = await response.text()
-      if (html.length > 5000) break
-    } catch {
-      // Fall through to the next strategy.
-    }
+function extractStatsFromHtml(html: string) {
+  const getMeta = (prop: string) => {
+    const m =
+      html.match(new RegExp(`<meta[^>]+property="${prop}"[^>]+content="([^"]*)"`, 'i')) ??
+      html.match(new RegExp(`<meta[^>]+content="([^"]*)"[^>]+property="${prop}"`, 'i'))
+    return m ? m[1] : ''
   }
 
-  if (!html) throw new Error('HTTP 403')
+  const ogDesc = getMeta('og:description')
+  const title = getMeta('og:title')
+  const image = getMeta('og:image')
 
-  const getMeta = (property: string) => {
-    const match =
-      html.match(new RegExp(`<meta[^>]+property="${property}"[^>]+content="([^"]*)"`, 'i')) ??
-      html.match(new RegExp(`<meta[^>]+content="([^"]*)"[^>]+property="${property}"`, 'i'))
-    return match ? match[1] : null
-  }
+  // Extract counts from og:description (e.g. "1,234 Followers, 567 Following, 89 Posts")
+  const followers = parseCount(ogDesc.match(/([\d,.]+[KMkm]?)\s*Followers?/i)?.[1]) ||
+    parseCount(html.match(/"follower_count"\s*:\s*(\d+)/)?.[1]) ||
+    parseCount(html.match(/"edge_followed_by"[^}]*"count"\s*:\s*(\d+)/)?.[1])
 
-  const title = getMeta('og:title') ?? ''
-  const description = getMeta('og:description') ?? ''
-  const image = getMeta('og:image') ?? ''
+  const following = parseCount(ogDesc.match(/([\d,.]+[KMkm]?)\s*Following/i)?.[1]) ||
+    parseCount(html.match(/"following_count"\s*:\s*(\d+)/)?.[1]) ||
+    parseCount(html.match(/"edge_follow"[^}]*"count"\s*:\s*(\d+)/)?.[1])
 
-  const followers = extractFromHtml(html, 'followers')
-  const following = extractFromHtml(html, 'following')
-  const posts = extractFromHtml(html, 'posts')
+  const posts = parseCount(ogDesc.match(/([\d,.]+[KMkm]?)\s*Posts?/i)?.[1]) ||
+    parseCount(html.match(/"media_count"\s*:\s*(\d+)/)?.[1]) ||
+    parseCount(html.match(/"edge_owner_to_timeline_media"[^}]*"count"\s*:\s*(\d+)/)?.[1])
 
   const nameMatch = title.match(/^([^(@]+)/)
-  const displayName = nameMatch ? nameMatch[1].trim() : username
+  const displayName = nameMatch ? nameMatch[1].trim() : ''
 
-  const bio = description
+  const bio = ogDesc
     .replace(/\d[\d,]*\s*(Followers?|Following|Posts?)[,\s]*/gi, '')
     .replace(/^-\s*See.*$/, '')
     .trim()
 
-  return {
-    username,
-    displayName,
-    followers,
-    following,
-    posts,
-    image,
-    bio: bio || description,
-    dataAvailable: followers > 0 || posts > 0,
-  }
+  return { displayName, followers, following, posts, image, bio }
 }
 
 async function getInstagramProfile(username: string) {
+  // Try mobile API first (most accurate)
+  const apiResult = await tryMobileApi(username)
+  if (apiResult) return { ...apiResult, limitedData: false }
+
+  // Try proxy scrape (bypasses datacenter IP blocks)
   try {
-    const apiProfile = await fetchInstagramProfileInfo(username)
-    if (apiProfile.dataAvailable) return apiProfile
-  } catch {
-    // Fall back to HTML scraping below.
+    const proxyHtml = await tryProxyScrape(username)
+    if (proxyHtml && proxyHtml.length > 5000) {
+      const stats = extractStatsFromHtml(proxyHtml)
+      if (stats.followers > 0 || stats.posts > 0) {
+        return {
+          username,
+          displayName: stats.displayName || username,
+          followers: stats.followers,
+          following: stats.following,
+          posts: stats.posts,
+          image: stats.image,
+          bio: stats.bio,
+          dataAvailable: true,
+          limitedData: false,
+        }
+      }
+    }
+  } catch { /* try direct */ }
+
+  // Try direct scrape
+  const directHtml = await tryDirectScrape(username)
+  if (directHtml) {
+    const stats = extractStatsFromHtml(directHtml)
+    if (stats.followers > 0 || stats.posts > 0) {
+      return {
+        username,
+        displayName: stats.displayName || username,
+        followers: stats.followers,
+        following: stats.following,
+        posts: stats.posts,
+        image: stats.image,
+        bio: stats.bio,
+        dataAvailable: true,
+        limitedData: false,
+      }
+    }
+    // Got the page but no stats — Instagram is blocking stats from this IP
+    return {
+      username,
+      displayName: stats.displayName || username,
+      followers: 0,
+      following: 0,
+      posts: 0,
+      image: stats.image,
+      bio: stats.bio,
+      dataAvailable: false,
+      limitedData: true,
+    }
   }
 
-  return scrapeInstagram(username)
+  throw new Error('Could not reach Instagram')
 }
 
-function buildLimitedFallbackProfile(username: string) {
+function buildEstimatedProfile(username: string, displayName = '', image = '') {
   return {
     username,
-    displayName: username,
+    displayName: displayName || username,
     followers: 1200,
     following: 450,
     posts: 36,
-    image: '',
+    image,
     bio: '',
     dataAvailable: false,
     limitedData: true,
@@ -236,16 +236,14 @@ function ruleBasedInsights(followers: number, posts: number, engagementRate: num
   const opportunities: string[] = []
   const warnings: string[] = []
 
-  if (posts < 20) opportunities.push('Publish consistently - accounts with 3-5 posts per week grow faster')
+  if (posts < 20) opportunities.push('Publish consistently — accounts with 3–5 posts per week grow faster')
   else opportunities.push('Increase posting frequency to 5 times per week to accelerate reach')
   opportunities.push('Add a strong CTA in every caption to drive link-in-bio traffic')
-  opportunities.push('Use Reels as your primary format - they generally outperform static posts for reach')
-  if (followers > 5000) {
-    opportunities.push('Launch a lead magnet tied to your niche to capture high-intent followers')
-  }
+  opportunities.push('Use Reels as your primary format — they outperform static posts for reach')
+  if (followers > 5000) opportunities.push('Launch a lead magnet tied to your niche to capture high-intent followers')
 
-  if (engagementRate < 2) warnings.push('Engagement rate is below the 2% benchmark - content relevance needs work')
-  if (followers < 1000) warnings.push('Low follower count limits social proof - organic growth should be the priority')
+  if (engagementRate < 2) warnings.push('Engagement rate is below the 2% benchmark — content relevance needs work')
+  if (followers < 1000) warnings.push('Low follower count limits social proof — organic growth should be the priority')
   warnings.push('Without a funnel behind your bio link, followers are not converting into leads')
 
   const overallScore = Math.min(
@@ -301,47 +299,47 @@ export async function POST(req: NextRequest) {
   return new Response(
     new ReadableStream({
       async start(controller) {
-        const sendStatus = (message: string) => {
-          controller.enqueue(makeSseEvent('status', { message }))
-        }
-
-        const sendError = (error: string) => {
-          controller.enqueue(makeSseEvent('error', { error }))
-        }
+        const send = (event: string, payload: unknown) => controller.enqueue(makeSseEvent(event, payload))
 
         try {
-          sendStatus('Validating username...')
+          send('status', { message: 'Validating username...' })
 
           const { username } = await req.json()
           if (!username || typeof username !== 'string') {
-            sendError('Username required')
+            send('error', { error: 'Username required' })
             controller.close()
             return
           }
 
           const clean = username.replace(/^@/, '').trim()
           if (!/^[a-zA-Z0-9._]{1,30}$/.test(clean)) {
-            sendError('Invalid Instagram username')
+            send('error', { error: 'Invalid Instagram username' })
             controller.close()
             return
           }
 
-          sendStatus('Fetching live Instagram profile data...')
-          let profile: ReturnType<typeof buildLimitedFallbackProfile> | Awaited<ReturnType<typeof getInstagramProfile>>
-          let usedLimitedFallback = false
+          send('status', { message: 'Fetching live Instagram profile data...' })
+
+          let profile: Awaited<ReturnType<typeof getInstagramProfile>> | ReturnType<typeof buildEstimatedProfile>
 
           try {
             profile = await getInstagramProfile(clean)
+            // If scraping returned the page but blocked stats, use estimated fallback
+            // but keep whatever display name / image we got
+            if (!profile.dataAvailable) {
+              profile = buildEstimatedProfile(clean, profile.displayName, profile.image)
+            }
           } catch {
-            usedLimitedFallback = true
-            profile = buildLimitedFallbackProfile(clean)
+            profile = buildEstimatedProfile(clean)
           }
 
-          sendStatus('Benchmarking engagement signals...')
+          send('status', { message: 'Benchmarking engagement signals...' })
           const metrics = estimateMetrics(profile.followers, profile.posts)
 
-          sendStatus('Generating Advertoria recommendations...')
+          send('status', { message: 'Generating Advertoria recommendations...' })
+
           let aiData: Record<string, unknown>
+          const isLimited = profile.limitedData
 
           try {
             const model = getModel()
@@ -350,7 +348,7 @@ export async function POST(req: NextRequest) {
 {"overallScore":<0-100>,"profileStrength":<0-100>,"contentScore":<0-100>,"growthScore":<0-100>,"monetisationScore":<0-100>,"opportunities":["<opportunity 1>","<opportunity 2>","<opportunity 3>","<opportunity 4>"],"warnings":["<warning 1>","<warning 2>","<warning 3>"],"topRecommendedServices":[{"service":"<name>","reason":"<why>","priority":"high"},{"service":"<name>","reason":"<why>","priority":"high"},{"service":"<name>","reason":"<why>","priority":"medium"}],"summary":"<2 sentence verdict>"}
 
 Services available: Performance Marketing, Creative Engine, Social Media Growth, AI Automation & CRM, Funnels & Conversion, Branding & Strategy, Data & Analytics, Web Development.
-${usedLimitedFallback ? 'Important: live Instagram metrics could not be retrieved reliably, so you must treat the numbers as directional estimates and make that clear in the summary.' : 'Use the live profile data below.'}
+${isLimited ? 'Important: live Instagram metrics could not be retrieved due to platform restrictions, so treat the numbers as directional estimates and note this in the summary.' : 'Use the live profile data below.'}
 
 Profile:
 Username: @${profile.username}
@@ -372,31 +370,29 @@ Monthly Growth Rate: ${metrics.followerGrowthRate}%`
             aiData = ruleBasedInsights(profile.followers, profile.posts, metrics.engagementRate)
           }
 
-          sendStatus('Audit complete.')
-          controller.enqueue(
-            makeSseEvent('result', {
-              profile: {
-                username: profile.username,
-                displayName: profile.displayName,
-                followers: profile.followers,
-                following: profile.following,
-                posts: profile.posts,
-                image: profile.image,
-                limitedData: usedLimitedFallback,
-              },
-              metrics,
-              ai: aiData,
-              analyzedAt: new Date().toISOString(),
-            })
-          )
+          send('status', { message: 'Audit complete.' })
+          send('result', {
+            profile: {
+              username: profile.username,
+              displayName: profile.displayName,
+              followers: profile.followers,
+              following: profile.following,
+              posts: profile.posts,
+              image: profile.image,
+              limitedData: isLimited,
+            },
+            metrics,
+            ai: aiData,
+            analyzedAt: new Date().toISOString(),
+          })
           controller.close()
         } catch (err) {
           const message = err instanceof Error ? err.message : 'Unknown error'
-          if (message.includes('HTTP 4') || message.includes('fetch')) {
-            sendError('Could not fetch the Instagram profile right now. Instagram may be rate-limiting the request.')
-          } else {
-            sendError(message)
-          }
+          send('error', {
+            error: message.includes('fetch') || message.includes('HTTP')
+              ? 'Could not reach Instagram right now. Please try again in a moment.'
+              : message,
+          })
           controller.close()
         }
       },
