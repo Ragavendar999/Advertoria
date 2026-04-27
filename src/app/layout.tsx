@@ -17,10 +17,6 @@ export const metadata: Metadata = {
   title: 'Advertoria - Wherever. Forever.',
   description:
     'Advertoria blends performance marketing, creative production, conversion systems, and automation to build revenue engines that scale with clarity.',
-  icons: {
-    icon: '/Advertoria-Logo.png.png',
-    apple: '/Advertoria-Logo.png.png',
-  },
 }
 
 export default function RootLayout({
