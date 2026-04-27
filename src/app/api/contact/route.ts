@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import nodemailer from 'nodemailer'
+import { Resend } from 'resend'
 
 export const runtime = 'nodejs'
 
@@ -28,31 +28,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Please fill in all required fields.' }, { status: 400 })
     }
 
-    const user = process.env.EMAIL_USER?.trim()
-    const pass = process.env.EMAIL_PASS?.replace(/\s/g, '')
-    const to = (process.env.EMAIL_TO || 'hello@advertoria.in').trim()
-
-    if (!user || !pass) {
-      return NextResponse.json(
-        { error: 'Email service is not configured. Set EMAIL_USER and EMAIL_PASS in .env.local.' },
-        { status: 500 }
-      )
+    const apiKey = process.env.RESEND_API_KEY
+    if (!apiKey) {
+      return NextResponse.json({ error: 'Email service is not configured.' }, { status: 500 })
     }
 
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: { user, pass },
-    })
+    const resend = new Resend(apiKey)
+    const to = (process.env.EMAIL_TO || 'n.ragavendar@gmail.com').trim()
 
     const safeName = escapeHtml(name.trim())
     const safeMobile = escapeHtml(mobile.trim())
     const safeEmail = escapeHtml(email.trim())
     const safeService = escapeHtml(service.trim())
 
-    await transporter.sendMail({
-      from: `"Advertoria Website" <${user}>`,
+    await resend.emails.send({
+      from: 'Advertoria <onboarding@resend.dev>',
       to,
       replyTo: email.trim(),
       subject: `New Appointment Request - ${name.trim()} (${service.trim()})`,
