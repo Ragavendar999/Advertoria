@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(curl -s -X POST http://localhost:3000/api/contact -H 'Content-Type: application/json' -d '{\"name\":\"Test\",\"companyName\":\"Test Co\",\"email\":\"test@test.com\",\"mobile\":\"1234567890\",\"industry\":\"Tech\",\"businessStage\":\"Growing brand\",\"monthlyBudget\":\"25,000 - 50,000 INR\",\"servicesNeeded\":\"SEO\",\"goals\":\"More leads\",\"targetAudience\":\"18-35\",\"timeline\":\"1 month\",\"currentChallenges\":\"none\"}')",
+      "Bash(curl -s -X POST http://localhost:3002/api/contact -H 'Content-Type: application/json' -d '{\"name\":\"Test\",\"companyName\":\"Test Co\",\"email\":\"test@test.com\",\"mobile\":\"1234567890\",\"industry\":\"Tech\",\"businessStage\":\"Growing brand\",\"monthlyBudget\":\"25000\",\"servicesNeeded\":\"SEO\",\"goals\":\"More leads\",\"targetAudience\":\"18-35\",\"timeline\":\"1 month\",\"currentChallenges\":\"none\"}')",
+      "Bash(python3 -c ' *)",
+      "Bash(node -e \"const fs = require\\('fs'\\); console.log\\(JSON.stringify\\(fs.readFileSync\\('c:/Users/RAGHAV/advertoria/src/components/Services.tsx', 'utf8'\\).slice\\(0,30\\)\\)\\)\")",
+      "Bash(npx tsc *)",
+      "Bash(npx next *)",
+      "Bash(npm install *)",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}
