@@ -122,7 +122,7 @@ export default function Navbar() {
 
         <button
           onClick={() => setMenuOpen((value) => !value)}
-          className="rounded-full border border-[rgba(78,47,168,0.15)] bg-white/80 p-3 text-[var(--brand)] lg:hidden"
+          className="ml-auto rounded-full border border-[rgba(78,47,168,0.15)] bg-white/80 p-3 text-[var(--brand)] lg:hidden"
           aria-label="Toggle menu"
         >
           {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
