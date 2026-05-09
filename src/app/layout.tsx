@@ -64,6 +64,14 @@ export default function RootLayout({
         </noscript>
         {children}
         <Toaster position="top-right" reverseOrder={false} />
+        {/* Google Analytics 4 */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-DECBKQ3SL3" strategy="afterInteractive" />
+        <Script id="ga4" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-DECBKQ3SL3');`}
+        </Script>
         {/* GTM head script — beforeInteractive injects this into <head> automatically */}
         <Script id="gtm-head" strategy="beforeInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
