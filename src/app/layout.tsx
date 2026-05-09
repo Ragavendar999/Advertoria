@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: 'Advertoria - Wherever. Forever.',
   description:
     'Advertoria blends performance marketing, creative production, conversion systems, and automation to build revenue engines that scale with clarity.',
+  verification: {
+    google: 'HfYq1eK6t7zTSrQoavswTzjLlGcwemqJ6osoylUD8bk',
+  },
 }
 
 export default function RootLayout({
