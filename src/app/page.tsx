@@ -19,6 +19,7 @@ import Pricing from '@/components/Pricing'
 import FAQ from '@/components/FAQ'
 import CTA from '@/components/CTA'
 import Contact from '@/components/Contact'
+import SeoBlock from '@/components/SeoBlock'
 import Footer from '@/components/Footer'
 import AnimatedCursor from '@/components/AnimatedCursor'
 import FloatingActions from '@/components/FloatingActions'
@@ -50,6 +51,7 @@ export default function HomePage() {
         <FAQ />
         <CTA />
         <Contact />
+        <SeoBlock />
         <Footer />
       </main>
     </>
