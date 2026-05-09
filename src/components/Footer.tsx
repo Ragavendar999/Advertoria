@@ -18,9 +18,11 @@ const navGroups = [
     title: 'Solutions',
     links: [
       { label: 'Performance marketing', id: 'services' },
-      { label: 'Creative production', id: 'services' },
-      { label: 'Funnels & CRO', id: 'services' },
-      { label: 'Automation & CRM', id: 'services' },
+      { label: 'Logo & graphic design', id: 'services' },
+      { label: 'Web development', id: 'services' },
+      { label: 'Social media marketing', id: 'services' },
+      { label: 'Branding & identity', id: 'services' },
+      { label: 'Google & Meta Ads', id: 'services' },
     ],
   },
 ]
@@ -52,8 +54,7 @@ export default function Footer() {
             </button>
 
             <p className="mt-5 max-w-sm text-sm leading-7 text-white/68">
-              A more colourful, consistent brand experience only matters if it also moves people toward action.
-              That is the standard we build to.
+              Chennai&apos;s full-service digital marketing agency for performance marketing, web development, logo design, graphic design, and branding. We build revenue systems that scale.
             </p>
 
             <div className="mt-6 space-y-3">

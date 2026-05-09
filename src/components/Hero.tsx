@@ -227,7 +227,7 @@ export default function Hero() {
           >
             <span className="eyebrow-lime">
               <Sparkles className="h-3.5 w-3.5" />
-              AI-Powered Revenue Agency
+              Digital Marketing Agency · Chennai
             </span>
             <span className="flex items-center gap-2 rounded-full border border-white/14 bg-white/8 px-4 py-2 text-xs font-bold text-white/70">
               <span className="h-2 w-2 rounded-full bg-[var(--accent)] animate-pulse" />
@@ -288,7 +288,7 @@ export default function Hero() {
           >
             Most agencies send a PDF. We build the entire revenue system — creatives that stop
             the scroll, funnels that close, automation that follows up, and data that shows you
-            exactly what to scale next.
+            exactly what to scale next. Trusted by 50+ brands across Chennai and Tamil Nadu.
           </motion.p>
 
           {/* CTAs */}

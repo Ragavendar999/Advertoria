@@ -7,20 +7,32 @@ import { ChevronDown } from 'lucide-react'
 
 const faqs = [
   {
-    q: 'How quickly can this kind of refresh affect results?',
-    a: 'Visual clarity can improve user confidence almost immediately, while campaign and funnel changes usually show stronger performance signals over the first two to four weeks.',
+    q: 'Are you a Chennai-based digital marketing agency?',
+    a: 'Yes. Advertoria is headquartered in Chennai, Tamil Nadu. We work with local businesses, startups, and scaling brands across Chennai and the rest of India — handling everything from performance marketing and Google Ads to branding and web development under one roof.',
   },
   {
-    q: 'Do you only improve the look, or the whole conversion journey too?',
-    a: 'The goal is always the full journey. We improve the visual language, the messaging, the structure of the page, and the follow-up flow so the site feels better and converts better.',
+    q: 'What digital marketing services do you offer in Chennai?',
+    a: 'We offer a full suite: performance marketing (Meta Ads, Google Ads), social media marketing, SEO, lead generation, web development, logo design, graphic design, branding, UI/UX, and marketing automation. Whether you need a single service or the entire growth system, we can plug in where it matters most.',
   },
   {
-    q: 'Can you work with small businesses as well as scaling brands?',
-    a: 'Yes. The system flexes to both. What changes is the depth of campaign structure, reporting, automation, and creative output.',
+    q: 'Do you work with small businesses and startups in Chennai?',
+    a: 'Absolutely. The system flexes to both early-stage startups and established brands. For small businesses, we prioritise affordable, high-impact work — the right channels, tight creative, and clear reporting — so every rupee is accountable.',
   },
   {
-    q: 'What channels do you typically manage?',
-    a: 'We mainly work across Meta, Google, landing page experiences, WhatsApp journeys, and CRM-linked follow-up systems.',
+    q: 'Do you offer logo design and graphic design services?',
+    a: 'Yes. Our creative team handles logo design, brand identity, packaging, social media design, motion graphics, and complete visual systems. We approach design commercially — every visual choice is made to build trust and drive action, not just look good.',
+  },
+  {
+    q: 'Can you build websites for businesses in Chennai?',
+    a: 'Yes. We build high-performance websites using Next.js and modern web technologies — fast, SEO-ready, and conversion-focused. From landing pages and business websites to e-commerce stores and SaaS platforms, we handle design, development, and launch end to end.',
+  },
+  {
+    q: 'How quickly can this kind of work affect results?',
+    a: 'Creative and campaign changes typically show stronger performance signals within the first two to four weeks. Website and funnel improvements can lift conversion rates almost immediately once live.',
+  },
+  {
+    q: 'What ad platforms do you manage?',
+    a: 'We mainly work across Meta Ads, Google Ads, landing page experiences, WhatsApp journeys, and CRM-linked follow-up systems. We pick the right channel mix based on your audience and offer — not based on what is easiest for us to run.',
   },
 ]
 

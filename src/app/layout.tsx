@@ -15,9 +15,31 @@ const manrope = Manrope({
 })
 
 export const metadata: Metadata = {
-  title: 'Advertoria - Wherever. Forever.',
+  title: 'Advertoria — Digital Marketing Agency in Chennai | Performance Marketing & Web Development',
   description:
-    'Advertoria blends performance marketing, creative production, conversion systems, and automation to build revenue engines that scale with clarity.',
+    'Advertoria is a full-service digital marketing agency in Chennai. We specialise in performance marketing, Google Ads, Meta Ads, social media marketing, SEO, web development, logo design, graphic design, and branding for startups and businesses across Tamil Nadu.',
+  keywords: [
+    'digital marketing agency Chennai',
+    'digital marketing company in Chennai',
+    'best digital marketing agency Chennai',
+    'digital marketing services Chennai',
+    'performance marketing Chennai',
+    'Google Ads agency Chennai',
+    'Meta Ads agency Chennai',
+    'social media marketing Chennai',
+    'SEO company in Chennai',
+    'lead generation company in Chennai',
+    'web development company in Chennai',
+    'website design agency Chennai',
+    'logo design company in Chennai',
+    'graphic design company in Chennai',
+    'branding agency Chennai',
+    'creative agency in Chennai',
+    'full service digital agency Chennai',
+    'affordable digital marketing Chennai',
+    'digital marketing for small business Chennai',
+    'design and marketing company in Chennai',
+  ],
   verification: {
     google: 'HfYq1eK6t7zTSrQoavswTzjLlGcwemqJ6osoylUD8bk',
   },

@@ -48,7 +48,7 @@ export default function Services() {
               <span className="text-gradient">revenue machine.</span>
             </h2>
           </div>
-          <p className="body-copy max-w-xl text-base">Each service connects to the next. Improvements in one layer automatically lift the others — ads, creative, funnels, automation, and analytics all compounding together.</p>
+          <p className="body-copy max-w-xl text-base">Each service connects to the next. Improvements in one layer automatically lift the others — ads, creative, funnels, automation, and analytics all compounding together. Serving startups and businesses across Chennai, Tamil Nadu, and beyond.</p>
         </motion.div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

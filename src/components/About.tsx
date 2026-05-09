@@ -30,6 +30,7 @@ export default function About() {
           <p className="body-copy mt-5 max-w-xl text-base">
             We build around one belief: performance gets stronger when the brand experience gets stronger.
             Strategy, visuals, copy, analytics, and follow-up all need to feel like they belong to the same system.
+            Based in Chennai, we partner with startups, small businesses, and scaling brands across Tamil Nadu and India.
           </p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-3">
