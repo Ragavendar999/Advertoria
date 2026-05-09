@@ -14,10 +14,15 @@ const manrope = Manrope({
   subsets: ['latin'],
 })
 
+const BASE_URL = 'https://www.advertoria.in'
+const TITLE = 'Best Digital Marketing Agency in Chennai | Advertoria — Performance Marketing & SEO'
+const DESCRIPTION =
+  'Advertoria is Chennai\'s best digital marketing agency. We specialise in performance marketing, Google Ads, Meta Ads, OTT advertising, SEO, social media marketing, web development, logo design, and branding for startups and businesses across Tamil Nadu. Get measurable results.'
+
 export const metadata: Metadata = {
-  title: 'Advertoria — Digital Marketing Agency in Chennai | Performance Marketing & Web Development',
-  description:
-    'Advertoria is a full-service digital marketing agency in Chennai. We specialise in performance marketing, Google Ads, Meta Ads, social media marketing, SEO, web development, logo design, graphic design, and branding for startups and businesses across Tamil Nadu.',
+  metadataBase: new URL(BASE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
   keywords: [
     // General digital marketing
     'best digital marketing agency',
@@ -69,6 +74,41 @@ export const metadata: Metadata = {
     'creative agency in Chennai',
     'design and marketing company in Chennai',
   ],
+  alternates: {
+    canonical: BASE_URL,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_IN',
+    url: BASE_URL,
+    siteName: 'Advertoria',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [
+      {
+        url: '/Advertoria-Logo.png.png',
+        width: 1200,
+        height: 630,
+        alt: 'Advertoria — Digital Marketing Agency in Chennai',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ['/Advertoria-Logo.png.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   verification: {
     google: 'HfYq1eK6t7zTSrQoavswTzjLlGcwemqJ6osoylUD8bk',
   },

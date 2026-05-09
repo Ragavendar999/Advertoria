@@ -5,9 +5,9 @@ import { useInView } from 'react-intersection-observer'
 import { ArrowUpRight, BarChart3, Target, Users, Zap } from 'lucide-react'
 
 const highlights = [
-  { icon: Target, title: 'ROI-first thinking', desc: 'Every page, ad, and message is judged by clarity, trust, and conversion potential.' },
-  { icon: Zap, title: 'Fast creative execution', desc: 'We move quickly but the work still feels considered, branded, and commercially sharp.' },
-  { icon: Users, title: 'Real partnership', desc: 'Your strategy, brand feel, and reporting cadence all stay visible and collaborative.' },
+  { icon: Target, title: 'ROI-first thinking', desc: 'Every page, ad, search engine campaign, and message is judged by clarity, trust, and conversion potential.' },
+  { icon: Zap, title: 'Fast creative execution', desc: 'We move quickly — from website development to ad creatives — and the work still feels considered, branded, and commercially sharp.' },
+  { icon: Users, title: 'Real partnership', desc: 'Your digital marketing strategies, brand feel, and reporting cadence all stay visible and collaborative.' },
 ]
 
 export default function About() {
@@ -29,8 +29,9 @@ export default function About() {
           </h2>
           <p className="body-copy mt-5 max-w-xl text-base">
             We build around one belief: performance gets stronger when the brand experience gets stronger.
-            Strategy, visuals, copy, analytics, and follow-up all need to feel like they belong to the same system.
-            Based in Chennai, we partner with startups, small businesses, and scaling brands across Tamil Nadu and India.
+            Strategy, content marketing, visuals, copy, analytics, and follow-up all need to feel like they belong
+            to the same system. As a leading digital marketing agency in Chennai, we partner with startups, small
+            businesses, and scaling brands across Tamil Nadu to achieve measurable results and long-term business goals.
           </p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-3">

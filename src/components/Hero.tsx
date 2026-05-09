@@ -227,7 +227,7 @@ export default function Hero() {
           >
             <span className="eyebrow-lime">
               <Sparkles className="h-3.5 w-3.5" />
-              Digital Marketing Agency · Chennai
+              Digital Marketing Agency in Chennai
             </span>
             <span className="flex items-center gap-2 rounded-full border border-white/14 bg-white/8 px-4 py-2 text-xs font-bold text-white/70">
               <span className="h-2 w-2 rounded-full bg-[var(--accent)] animate-pulse" />
@@ -237,6 +237,7 @@ export default function Hero() {
 
           {/* Word-by-word headline */}
           <h1 className="display-title text-[clamp(2.6rem,7vw,4.8rem)] font-black leading-[0.88]">
+            <span className="sr-only">Digital Marketing Agency in Chennai — </span>
             <span className="block">
               {HEADLINE_1.map((word, i) => (
                 <motion.span
@@ -349,12 +350,21 @@ export default function Hero() {
               </svg>
               <span className="text-[11px] font-bold text-white/70">Google Ads</span>
             </div>
-            {/* TikTok */}
+            {/* Hotstar */}
             <div className="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/6 px-3 py-1.5 sm:flex">
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="white" aria-label="TikTok">
-                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.97a8.27 8.27 0 004.84 1.55V7.08a4.85 4.85 0 01-1.07-.39z"/>
+              <svg viewBox="0 0 24 24" className="h-4 w-4" aria-label="Hotstar">
+                <rect width="24" height="24" rx="4" fill="#1F80E0"/>
+                <text x="12" y="16" textAnchor="middle" fontSize="9" fontWeight="bold" fill="white" fontFamily="sans-serif">hs</text>
               </svg>
-              <span className="text-[11px] font-bold text-white/70">TikTok</span>
+              <span className="text-[11px] font-bold text-white/70">Hotstar</span>
+            </div>
+            {/* JioCinema */}
+            <div className="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/6 px-3 py-1.5 sm:flex">
+              <svg viewBox="0 0 24 24" className="h-4 w-4" aria-label="JioCinema">
+                <rect width="24" height="24" rx="4" fill="#8B5CF6"/>
+                <text x="12" y="16" textAnchor="middle" fontSize="7" fontWeight="bold" fill="white" fontFamily="sans-serif">JC</text>
+              </svg>
+              <span className="text-[11px] font-bold text-white/70">JioCinema</span>
             </div>
           </motion.div>
         </div>

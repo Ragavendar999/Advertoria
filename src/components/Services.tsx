@@ -48,7 +48,7 @@ export default function Services() {
               <span className="text-gradient">revenue machine.</span>
             </h2>
           </div>
-          <p className="body-copy max-w-xl text-base">Each service connects to the next. Improvements in one layer automatically lift the others — ads, creative, funnels, automation, and analytics all compounding together. Serving startups and businesses across Chennai, Tamil Nadu, and beyond.</p>
+          <p className="body-copy max-w-xl text-base">Each service connects to the next. Our digital marketing strategies improve one layer and automatically lift the others — ads, creative, funnels, automation, and analytics all compounding together. As a full-service digital marketing company in Chennai, we help brands strengthen their online presence, reach the right target audience, and achieve measurable results across Tamil Nadu and beyond.</p>
         </motion.div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -87,17 +87,17 @@ export default function Services() {
               Build my growth plan <ChevronRight className="h-4 w-4" />
             </a>
           </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-5">
+          <ol className="mt-8 grid list-none gap-4 p-0 m-0 md:grid-cols-5">
             {playbookSteps.map(({ label, icon: Icon }, i) => (
-              <motion.div key={label} initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.55 + i * 0.09 }} className="rounded-[24px] border border-white/10 bg-white/6 px-4 py-5">
+              <motion.li key={label} initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.55 + i * 0.09 }} className="rounded-[24px] border border-white/10 bg-white/6 px-4 py-5">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-[18px] bg-[var(--accent)]">
                   <Icon className="h-5 w-5 text-[var(--brand-strong)]" />
                 </div>
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/44">0{i + 1}</p>
                 <p className="mt-2 text-sm font-semibold leading-6 text-white">{label}</p>
-              </motion.div>
+              </motion.li>
             ))}
-          </div>
+          </ol>
         </motion.div>
       </div>
 

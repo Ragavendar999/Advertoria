@@ -8,27 +8,27 @@ const features = [
   {
     icon: Lightbulb,
     title: 'Creative and performance in one room',
-    desc: 'The visual language and the ad strategy are shaped together, which makes the work more persuasive and more coherent.',
+    desc: 'The visual language and the ad strategy are shaped together, which makes the work more persuasive and drives measurable results.',
   },
   {
     icon: Brain,
     title: 'Strategy before execution',
-    desc: 'We map the offer, user intent, and proof first so the design and campaigns have a stronger point of view.',
+    desc: 'We map the offer, target audience, and proof first so the design and campaigns have a stronger point of view and better online presence.',
   },
   {
     icon: RefreshCw,
     title: 'Continuous optimisation',
-    desc: 'What we learn from campaigns feeds back into the site, creatives, and follow-up journeys quickly.',
+    desc: 'What we learn from campaigns feeds back into the site, creatives, and follow-up journeys — digital marketing strategies that compound over the long term.',
   },
   {
     icon: Rocket,
     title: 'Fast rollout without visual chaos',
-    desc: 'We build speed on top of a system, which keeps the brand experience consistent while things move.',
+    desc: 'We build speed on top of a system — from search engine campaigns to website development — keeping the brand experience consistent while things move.',
   },
   {
     icon: GraduationCap,
     title: 'Fresh ideas from a training ecosystem',
-    desc: 'The team keeps refining hooks, creative formats, and market understanding instead of repeating old templates.',
+    desc: 'The team keeps refining hooks, creative formats, and content marketing approaches instead of repeating old templates.',
   },
 ]
 
@@ -45,7 +45,7 @@ export default function WhyUs() {
         >
           <span className="eyebrow">Why Advertoria</span>
           <h2 className="display-title mt-5 text-4xl font-black leading-[0.96] text-[var(--fg)] md:text-5xl">
-            Why brands choose Advertoria when they want the full experience to feel stronger.
+            Why brands choose Advertoria — Chennai&apos;s top digital marketing agency — when they want the full experience to feel stronger.
           </h2>
         </motion.div>
 
